@@ -17,18 +17,26 @@ module.exports = {
       }
     ]
   },
-  actions: [
-    {
-      type: 'move',
-      patterns: {
-        'index.js': 'index.js',
-        'module.scss': `${this.answers.name}.module.scss`
+  actions () {
+    return [
+      {
+        type: 'add',
+        files: '**'
+      },
+      {
+        type: 'move',
+        patterns: {
+          'COMPONENT_NAME/module.scss': `COMPONENT_NAME/${this.answers.name}.module.scss`,
+          COMPONENT_NAME: this.answers.name
+        }
       }
-    }
-  ],
+    ]
+  },
   async completed () {
-    const oldPath = path.join(__dirname, this.answers.name)
-    const newPath = path.join(__dirname, this.answers.location, this.answers.name)
-    fs.rename(oldPath, newPath)
+    const oldPath = path.join(process.cwd(), this.answers.name)
+    const newPath = path.join(process.cwd(), this.answers.location, this.answers.name)
+    fs.rename(oldPath, newPath, err => {
+      if (err) console.error(err)
+    })
   }
 }
